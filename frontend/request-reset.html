@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Password Reset</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Request Password Reset</h1>
+    <form id="requestResetForm">
+      <input type="email" id="resetEmail" placeholder="Email" required>
+      <button type="submit">Request Reset</button>
+      <div id="requestResetMessage" class="message"></div>
+    </form>
+    <p>Remember your password? <a href="/login">Login here</a></p>
+  </div>
+
+  <script>
+    document.getElementById('requestResetForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value;
+      const messageDiv = document.getElementById('requestResetMessage');
+
+      try {
+        const response = await fetch('/api/users/request-password-reset', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+        messageDiv.textContent = data.message;
+        messageDiv.className = data.success ? 'message success' : 'message error';
+      } catch (error) {
+        messageDiv.textContent = `Error: ${error.message}`;
+        messageDiv.className = 'message error';
+      }
+    });
+  </script>
+</body>
+</html>
+
